@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 
+@ApiTags('column')
 @Controller('column')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}

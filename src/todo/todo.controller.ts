@@ -7,15 +7,19 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 
+@ApiTags('todo')
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
+  @ApiBody({ type: CreateTodoDto })
   create(@Body() createTodoDto: CreateTodoDto, idColumn: string) {
     return this.todoService.create(createTodoDto, idColumn);
   }

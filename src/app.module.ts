@@ -1,21 +1,23 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+
 import { TodoModule } from './todo/todo.module';
 import { ColumnModule } from './column/column.module';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      ignoreEnvFile: true,
+    }),
     MongooseModule.forRoot('mongodb://localhost:27017/trello'),
     TodoModule,
     ColumnModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
