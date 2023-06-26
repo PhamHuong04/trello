@@ -33,4 +33,11 @@ export class TodoService {
     await this.todoModel.findByIdAndDelete(id).exec();
     return 'delete successfully';
   }
+  async getTasksByColumn(column: string) {
+    const data = await this.todoModel.find({ column: column }).exec();
+    return data;
+  }
+  deleteByColumn(columnId: string) {
+    return this.todoModel.deleteMany({ columnId });
+  }
 }

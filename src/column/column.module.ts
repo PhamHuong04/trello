@@ -5,7 +5,7 @@ import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import {
   Column,
   ColumnSchema,
-  ColumnSchemaFactory,
+  // ColumnSchemaFactory,
 } from './entities/column.entity';
 import { Todo, TodoSchema } from 'src/todo/entities/todo.entity';
 
@@ -13,17 +13,20 @@ import { Todo, TodoSchema } from 'src/todo/entities/todo.entity';
   controllers: [ColumnController],
   providers: [ColumnService],
   imports: [
-    MongooseModule.forFeature([{ name: Column.name, schema: ColumnSchema }]),
-    MongooseModule.forFeatureAsync([
-      {
-        name: Column.name,
-        useFactory: ColumnSchemaFactory,
-        inject: [getModelToken(Todo.name)],
-        imports: [
-          MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }]),
-        ],
-      },
+    MongooseModule.forFeature([
+      { name: Column.name, schema: ColumnSchema },
+      { name: Todo.name, schema: TodoSchema },
     ]),
+    // MongooseModule.forFeatureAsync([
+    //   {
+    //     name: Column.name,
+    //     useFactory: ColumnSchemaFactory,
+    //     inject: [getModelToken(Todo.name)],
+    //     imports: [
+    //       MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }]),
+    //     ],
+    //   },
+    // ]),
   ],
 })
 export class ColumnModule {}
