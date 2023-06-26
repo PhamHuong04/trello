@@ -8,10 +8,11 @@ import {
   // ColumnSchemaFactory,
 } from './entities/column.entity';
 import { Todo, TodoSchema } from 'src/todo/entities/todo.entity';
+import { TodoService } from 'src/todo/todo.service';
 
 @Module({
   controllers: [ColumnController],
-  providers: [ColumnService],
+  providers: [ColumnService, TodoService],
   imports: [
     MongooseModule.forFeature([
       { name: Column.name, schema: ColumnSchema },

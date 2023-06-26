@@ -34,12 +34,9 @@ export class TodoController {
     return this.todoService.findOne(id);
   }
 
-  @Get(':column')
-  async getTasksByColumn(@Param('column') column: string) {
-    console.log(column);
-    const res = await this.todoService.getTasksByColumn(column);
-    console.log(res);
-    return {"res": res, "column": column};
+  @Get('getTasksByColumn/:column')
+  getTasksByColumn(@Param('column') column: string) {
+    return this.todoService.getTasksByColumn(column);
   }
 
   @Patch(':id')
