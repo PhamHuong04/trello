@@ -11,7 +11,7 @@ import { Column } from './entities/column.entity';
 export class ColumnService {
   constructor(
     @InjectModel(Column.name) private columnModel: Model<Column>,
-   private readonly todoService: TodoService,
+    private readonly todoService: TodoService,
   ) {}
 
   async create(createColumnDto: CreateColumnDto) {
@@ -37,5 +37,19 @@ export class ColumnService {
     await this.columnModel.findByIdAndDelete(id).exec();
     await this.todoService.deleteByColumn(id);
     return 'delete successfully';
+  }
+
+  async mergerColumnAndTask() {
+    const data = await this.columnModel.aggregate([
+      {
+        $lookup: {
+          from: 'todos',
+          localField: '_id',
+          foreignField: 'column',
+          as: 'todos',
+        },
+      },
+    ]);
+    return data;
   }
 }

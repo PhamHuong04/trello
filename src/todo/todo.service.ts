@@ -8,6 +8,7 @@ import { Todo } from './entities/todo.entity';
 @Injectable()
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
+
   async create(createTodoDto: CreateTodoDto, idColumn: string) {
     await new this.todoModel({
       ...createTodoDto,

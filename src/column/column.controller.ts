@@ -28,6 +28,11 @@ export class ColumnController {
     return this.columnService.findAll();
   }
 
+  @Get('column-task')
+  mergerColumnAndTask() {
+    return this.columnService.mergerColumnAndTask();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.columnService.findOne(id);
