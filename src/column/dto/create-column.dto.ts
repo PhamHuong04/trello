@@ -5,4 +5,7 @@ export class CreateColumnDto {
   @ApiProperty()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty()
+  rank: number;
 }

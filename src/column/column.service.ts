@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Todo } from 'src/todo/entities/todo.entity';
 import { TodoService } from 'src/todo/todo.service';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
@@ -15,8 +14,22 @@ export class ColumnService {
   ) {}
 
   async create(createColumnDto: CreateColumnDto) {
+    const findRank = await this.columnModel.aggregate([
+      { $unwind: '$rank' },
+      { $group: { _id: null, max_value: { $max: '$rank' } } },
+      { $project: { _id: 0, max_value: 1 } },
+    ]);
+
+    let rank;
+    if (findRank && findRank.length > 0) {
+      rank = findRank[0].max_value + 1;
+    } else {
+      rank = 1;
+    }
+
     await new this.columnModel({
       ...createColumnDto,
+      rank,
     }).save();
     return 'create successfully';
   }
@@ -48,6 +61,9 @@ export class ColumnService {
           foreignField: 'column',
           as: 'todos',
         },
+      },
+      {
+        $sort: { rank: 1 },
       },
     ]);
     return data;

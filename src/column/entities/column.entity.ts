@@ -9,6 +9,9 @@ export class Column {
 
   @Prop({ required: true })
   name: string;
+
+  @Prop()
+  rank: number;
 }
 
 export const ColumnSchema = SchemaFactory.createForClass(Column);
