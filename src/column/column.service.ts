@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { TodoService } from 'src/todo/todo.service';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { Column } from './entities/column.entity';
+import { Todo } from 'src/todo/entities/todo.entity';
 
 @Injectable()
 export class ColumnService {
@@ -20,7 +21,7 @@ export class ColumnService {
       { $project: { _id: 0, max_value: 1 } },
     ]);
 
-    let rank;
+    let rank: number;
     if (findRank && findRank.length > 0) {
       rank = findRank[0].max_value + 1;
     } else {
@@ -30,12 +31,15 @@ export class ColumnService {
     await new this.columnModel({
       ...createColumnDto,
       rank,
+      taskList: [],
     }).save();
     return 'create successfully';
   }
 
-  findAll() {
-    return this.columnModel.find().exec();
+  async findAll() {
+    const res = await this.columnModel.find().exec();
+    console.log(res);
+    return res;
   }
 
   findOne(id: string) {

@@ -12,6 +12,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Todo } from './entities/todo.entity';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -47,5 +48,10 @@ export class TodoController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.todoService.remove(id);
+  }
+
+  @Post('swap-task')
+  swapTask(@Body() taskId: string, columnDsc: string) {
+    return this.todoService.swapTask(taskId);
   }
 }
