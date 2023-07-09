@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { SchemaTypes } from 'mongoose';
-import { Todo } from 'src/todo/entities/todo.entity';
+import mongoose from 'mongoose';
+import { Board } from 'src/board/entities/board.entity';
 
 export type ColumnDocument = mongoose.HydratedDocument<Column>;
 @Schema()
@@ -19,6 +19,14 @@ export class Column {
     default: [],
   })
   taskList: Array<string>[];
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Board',
+    required: true,
+    default: '64aa296dd011b93a75b8de49',
+  })
+  boardId: Board;
 }
 
 export const ColumnSchema = SchemaFactory.createForClass(Column);

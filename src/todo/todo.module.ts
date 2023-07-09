@@ -6,6 +6,7 @@ import { ColumnService } from './../column/column.service';
 import { TodoController } from './todo.controller';
 import { Todo, TodoSchema } from './entities/todo.entity';
 import { Column, ColumnSchema } from 'src/column/entities/column.entity';
+import { Board, BoardSchema } from 'src/board/entities/board.entity';
 
 @Module({
   controllers: [TodoController],
@@ -14,6 +15,7 @@ import { Column, ColumnSchema } from 'src/column/entities/column.entity';
     MongooseModule.forFeature([
       { name: Todo.name, schema: TodoSchema },
       { name: Column.name, schema: ColumnSchema },
+      { name: Board.name, schema: BoardSchema },
     ]),
   ],
 })

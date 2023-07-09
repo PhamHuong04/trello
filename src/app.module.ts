@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TodoModule } from './todo/todo.module';
 import { ColumnModule } from './column/column.module';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HttpExceptionFilter } from './common/filter/http-exception.filter';
     MongooseModule.forRoot('mongodb://localhost:27017/trello'),
     TodoModule,
     ColumnModule,
+    BoardModule,
   ],
   controllers: [],
   providers: [

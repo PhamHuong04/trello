@@ -1,38 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Board } from 'src/board/entities/board.entity';
 import { TodoService } from 'src/todo/todo.service';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { Column } from './entities/column.entity';
-import { Todo } from 'src/todo/entities/todo.entity';
 
 @Injectable()
 export class ColumnService {
   constructor(
     @InjectModel(Column.name) private columnModel: Model<Column>,
+    @InjectModel(Board.name) private boardModel: Model<Board>,
     private readonly todoService: TodoService,
   ) {}
 
   async create(createColumnDto: CreateColumnDto) {
-    const findRank = await this.columnModel.aggregate([
-      { $unwind: '$rank' },
-      { $group: { _id: null, max_value: { $max: '$rank' } } },
-      { $project: { _id: 0, max_value: 1 } },
-    ]);
+    // const findRank = await this.columnModel.aggregate([
+    //   { $unwind: '$rank' },
+    //   { $group: { _id: null, max_value: { $max: '$rank' } } },
+    //   { $project: { _id: 0, max_value: 1 } },
+    // ]);
 
-    let rank: number;
-    if (findRank && findRank.length > 0) {
-      rank = findRank[0].max_value + 1;
-    } else {
-      rank = 1;
-    }
+    // let rank: number;
+    // if (findRank && findRank.length > 0) {
+    //   rank = findRank[0].max_value + 1;
+    // } else {
+    //   rank = 0;
+    // }
 
-    await new this.columnModel({
+    const newColumn = await new this.columnModel({
       ...createColumnDto,
-      rank,
+      // rank,
       taskList: [],
     }).save();
+    await this.boardModel.findByIdAndUpdate(newColumn.boardId, {
+      $push: { boardList: newColumn._id },
+    });
     return 'create successfully';
   }
 

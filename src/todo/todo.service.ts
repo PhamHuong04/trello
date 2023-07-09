@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ColumnService } from 'src/column/column.service';
 import { Column } from 'src/column/entities/column.entity';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -64,7 +63,12 @@ export class TodoService {
     // const column = await this.columnModel.findOne(cId).exec();
     // update to new col
     await this.columnModel.findByIdAndUpdate(taskId.columnDsc, {
-      $push: { taskList: { $each: [taskId.taskId], $position: 0 } },
+      $push: {
+        taskList: {
+          $each: [taskId.taskId],
+          $position: { $indexOfArray: [taskId.taskId] },
+        },
+      },
     });
   }
 }
