@@ -47,4 +47,26 @@ export class ColumnController {
   remove(@Param('id') id: string) {
     return this.columnService.remove(id);
   }
+  @Post('update')
+  updateTaskList(
+    @Body()
+    updateData: {
+      columnEnd: string;
+      columnStart: string;
+      task_id: string;
+      index: number;
+    },
+  ) {
+    const { columnEnd, columnStart, task_id, index } = updateData;
+    return this.columnService.updateSwap(
+      columnEnd,
+      columnStart,
+      task_id,
+      index,
+    );
+  }
+  @Post('index')
+  findIndex(@Body() columnId: string, taskId: string) {
+    return this.columnService.findIndex(columnId, taskId);
+  }
 }

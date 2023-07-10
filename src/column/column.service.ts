@@ -41,13 +41,13 @@ export class ColumnService {
   }
 
   async findAll() {
-    const res = await this.columnModel.find().exec();
+    const res = await this.columnModel.find().populate('taskList').exec();
     console.log(res);
     return res;
   }
 
   findOne(id: string) {
-    return this.columnModel.findById(id).exec();
+    return this.columnModel.findById(id).populate('taskList').exec();
   }
 
   update(id: string, updateColumnDto: UpdateColumnDto) {
@@ -55,8 +55,13 @@ export class ColumnService {
   }
 
   async remove(id: string) {
+    const column = this.columnModel.findById(id).exec();
     await this.columnModel.findByIdAndDelete(id).exec();
     await this.todoService.deleteByColumn(id);
+    const columnId = (await column).boardId;
+    await this.boardModel.findByIdAndUpdate(columnId, {
+      $pull: { boardList: id },
+    });
     return 'delete successfully';
   }
 
@@ -75,5 +80,35 @@ export class ColumnService {
       },
     ]);
     return data;
+  }
+  async updateSwap(
+    columnEnd: string,
+    columnStart: string,
+    task_id: string,
+    index: number,
+  ) {
+    await this.columnModel.findByIdAndUpdate(columnStart, {
+      $pull: { taskList: task_id },
+    });
+    await this.columnModel.findByIdAndUpdate(columnEnd, {
+      $push: {
+        taskList: {
+          $each: [task_id],
+          $position: index,
+        },
+      },
+    });
+  }
+  async findIndex(columnId: string, taskId: string) {
+    return await this.columnModel.aggregate([
+      { $match: { _id: columnId } },
+      {
+        $project: {
+          index: {
+            $indexOfArray: ['$taskList', taskId],
+          },
+        },
+      },
+    ]);
   }
 }

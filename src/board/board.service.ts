@@ -9,22 +9,22 @@ import { Board } from './entities/board.entity';
 export class BoardService {
   constructor(@InjectModel(Board.name) private boardModel: Model<Board>) {}
   findAll() {
-    return this.boardModel.find().exec();
+    return this.boardModel.find().populate('boardList').exec();
   }
   create(createBoardDto: CreateBoardDto) {
     return new this.boardModel({
       ...createBoardDto,
     }).save();
   }
-  async update(column, index) {
-    await this.boardModel.findByIdAndUpdate(column.boardId, {
-      $pull: { boardList: column._id },
+  async update(column_id: string, boardId: string, index: number) {
+    await this.boardModel.findByIdAndUpdate(boardId, {
+      $pull: { boardList: column_id },
     });
-    await this.boardModel.findByIdAndUpdate(column._id, {
+    await this.boardModel.findByIdAndUpdate(boardId, {
       $push: {
         boardList: {
-          $each: [column._id],
-          $position: { $indexOfArray: index },
+          $each: [column_id],
+          $position: index,
         },
       },
     });
